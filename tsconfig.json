@@ -1,0 +1,3 @@
+{
+  "extends": "@kabut-tipis/config/tsconfig.base.json"
+}

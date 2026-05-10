@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "base-lyra",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/styles/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@kabut-tipis/ui/components",
+    "utils": "@kabut-tipis/ui/lib/utils",
+    "hooks": "@kabut-tipis/ui/hooks",
+    "lib": "@kabut-tipis/ui/lib",
+    "ui": "@kabut-tipis/ui/components"
+  },
+  "menuColor": "default",
+  "menuAccent": "subtle",
+  "registries": {}
+}
