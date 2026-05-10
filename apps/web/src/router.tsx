@@ -28,7 +28,13 @@ export const queryClient = new QueryClient({
 
 function getBaseUrl() {
 	if (typeof window !== "undefined") return ""; // browser: pakai relative URL
-	return import.meta.env.VITE_APP_URL ?? "http://localhost:3001"; // SSR: perlu absolute
+	// SSR on Cloudflare Workers needs an absolute URL — localhost doesn't exist there
+	return (
+		import.meta.env.VITE_APP_URL ??
+		(import.meta.env.PROD
+			? "https://kabuttipis.badry.asia"
+			: "http://localhost:3001")
+	);
 }
 
 const trpcClient = createTRPCClient<AppRouter>({
