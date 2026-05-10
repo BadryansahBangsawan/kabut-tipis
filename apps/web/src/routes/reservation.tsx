@@ -18,6 +18,16 @@ import { useTRPC } from "../utils/trpc";
 
 // ─── Route ─────────────────────────────────────────────────────────────────
 export const Route = createFileRoute("/reservation")({
+	head: () => ({
+		meta: [
+			{ title: "Reservasi — Kabut Tipis" },
+			{
+				name: "description",
+				content:
+					"Reservasi meja atau paket kunjungan Kabut Tipis dengan mudah. Isi form dan konfirmasi langsung via WhatsApp.",
+			},
+		],
+	}),
 	validateSearch: z.object({ paket: z.string().optional() }),
 	loader: ({ context }) =>
 		context.queryClient.ensureQueryData(
@@ -76,7 +86,7 @@ function buildWhatsAppUrl(
 		.filter((line) => line !== null)
 		.join("\n");
 
-	return `https://wa.me/6281234567890?text=${encodeURIComponent(text)}`;
+	return `https://wa.me/6285245055567?text=${encodeURIComponent(text)}`;
 }
 
 // ─── Page ───────────────────────────────────────────────────────────────────
@@ -352,7 +362,7 @@ function SuccessCard({ onReset }: { onReset: () => void }) {
 			<div className="flex flex-col gap-2 sm:flex-row">
 				<a
 					className="inline-flex items-center justify-center gap-2 rounded-none bg-primary px-4 py-2 font-semibold text-primary-foreground text-sm transition-opacity hover:opacity-90"
-					href="https://wa.me/6281234567890"
+					href="https://wa.me/6285245055567"
 					rel="noreferrer"
 					target="_blank"
 				>

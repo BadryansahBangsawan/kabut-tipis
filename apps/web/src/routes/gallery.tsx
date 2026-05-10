@@ -30,6 +30,16 @@ const FILTER_TABS: FilterTab[] = [
 ];
 
 export const Route = createFileRoute("/gallery")({
+	head: () => ({
+		meta: [
+			{ title: "Galeri — Kabut Tipis" },
+			{
+				name: "description",
+				content:
+					"Koleksi foto dan video suasana Kabut Tipis — area rekreasi, coffeeshop, dan penginapan di tengah alam.",
+			},
+		],
+	}),
 	loader: ({ context }) =>
 		context.queryClient.ensureQueryData(
 			context.trpc.gallery.list.queryOptions(),

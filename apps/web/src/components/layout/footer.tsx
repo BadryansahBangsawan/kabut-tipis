@@ -223,15 +223,27 @@ export default function Footer() {
 						className="mt-10 flex w-full flex-col items-center gap-5"
 					>
 						<div className="flex flex-wrap justify-center gap-3">
-							<MagneticButton href="/reservation">
+							<MagneticButton
+								href="https://wa.me/6285245055567"
+								rel="noreferrer"
+								target="_blank"
+							>
 								<MessageCircle data-icon="inline-start" />
 								WhatsApp
 							</MagneticButton>
-							<MagneticButton href="/gallery">
+							<MagneticButton
+								href="https://www.instagram.com/kabutipiscampsite"
+								rel="noreferrer"
+								target="_blank"
+							>
 								<Camera data-icon="inline-start" />
 								Instagram
 							</MagneticButton>
-							<MagneticButton href="/contact">
+							<MagneticButton
+								href="https://maps.app.goo.gl/pqquk98eyFmz2j4j8"
+								rel="noreferrer"
+								target="_blank"
+							>
 								<MapPin data-icon="inline-start" />
 								Maps
 							</MagneticButton>

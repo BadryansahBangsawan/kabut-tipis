@@ -26,10 +26,15 @@ export const queryClient = new QueryClient({
 	defaultOptions: { queries: { staleTime: 60 * 1000 } },
 });
 
+function getBaseUrl() {
+	if (typeof window !== "undefined") return ""; // browser: pakai relative URL
+	return import.meta.env.VITE_APP_URL ?? "http://localhost:3001"; // SSR: perlu absolute
+}
+
 const trpcClient = createTRPCClient<AppRouter>({
 	links: [
 		httpBatchLink({
-			url: "/api/trpc",
+			url: `${getBaseUrl()}/api/trpc`,
 		}),
 	],
 });

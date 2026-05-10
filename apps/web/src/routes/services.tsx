@@ -20,6 +20,16 @@ import { useState } from "react";
 import Pricing from "../components/sections/pricing";
 
 export const Route = createFileRoute("/services")({
+	head: () => ({
+		meta: [
+			{ title: "Layanan & Paket — Kabut Tipis" },
+			{
+				name: "description",
+				content:
+					"Pilih paket kunjungan Kabut Tipis — dari rekreasi harian, meja keluarga, camping santai, hingga staycation dengan pemandangan alam.",
+			},
+		],
+	}),
 	component: ServicesPage,
 });
 
@@ -171,7 +181,7 @@ function ServicesPage() {
 						</p>
 						<a
 							className={buttonVariants()}
-							href="https://wa.me/6281234567890"
+							href="https://wa.me/6285245055567"
 							rel="noreferrer"
 							target="_blank"
 						>
