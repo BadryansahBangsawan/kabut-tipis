@@ -11,6 +11,7 @@ export const web = await TanStackStart("web", {
 	cwd: "../../apps/web",
 	bindings: {
 		DATABASE_URL: alchemy.secret.env.DATABASE_URL!,
+		DATABASE_AUTH_TOKEN: alchemy.secret.env.DATABASE_AUTH_TOKEN!,
 		CORS_ORIGIN: alchemy.env.CORS_ORIGIN!,
 	},
 });

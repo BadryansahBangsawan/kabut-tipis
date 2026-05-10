@@ -1,10 +1,14 @@
 import { createClient } from "@libsql/client";
+import { config } from "dotenv";
 import { drizzle } from "drizzle-orm/libsql";
 
 import * as schema from "./schema";
 
+config({ path: "../../apps/web/.env" });
+
 const client = createClient({
-	url: process.env.DATABASE_URL ?? "file:/Users/bbbadry/Downloads/kabut-tipis/local.db",
+	url: process.env.DATABASE_URL!,
+	authToken: process.env.DATABASE_AUTH_TOKEN,
 });
 
 const db = drizzle({ client, schema });
@@ -90,9 +94,9 @@ async function seed() {
 	await db.insert(schema.galleryItems).values([
 		{
 			id: "gal-1",
-			title: "Pemandangan Gunung",
-			description: "Silhuet gunung di pagi hari",
-			url: "https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=1200&auto=format&fit=crop",
+			title: "Pemandangan Alam Kabut Tipis",
+			description: "Suasana alam hijau dari area utama",
+			url: "/kabut-tipis-asset/foto/1.png",
 			thumbnailUrl: null,
 			type: "photo",
 			category: "rekreasi",
@@ -100,9 +104,9 @@ async function seed() {
 		},
 		{
 			id: "gal-2",
-			title: "Sawah Hijau",
-			description: "Hamparan sawah di sekitar area",
-			url: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200&auto=format&fit=crop",
+			title: "Area Rekreasi",
+			description: "Spot favorit pengunjung",
+			url: "/kabut-tipis-asset/foto/2.png",
 			thumbnailUrl: null,
 			type: "photo",
 			category: "rekreasi",
@@ -112,7 +116,7 @@ async function seed() {
 			id: "gal-3",
 			title: "Area Coffeeshop",
 			description: "Suasana coffeeshop dengan view alam",
-			url: "https://images.unsplash.com/photo-1445116572660-236099ec97a0?q=80&w=1200&auto=format&fit=crop",
+			url: "/kabut-tipis-asset/foto/3.png",
 			thumbnailUrl: null,
 			type: "photo",
 			category: "coffeeshop",
@@ -120,63 +124,13 @@ async function seed() {
 		},
 		{
 			id: "gal-4",
-			title: "Meja Lesehan",
-			description: "Spot duduk santai menghadap sawah",
-			url: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1200&auto=format&fit=crop",
-			thumbnailUrl: null,
-			type: "photo",
-			category: "coffeeshop",
-			sortOrder: 4,
-		},
-		{
-			id: "gal-5",
-			title: "Kamar Penginapan",
-			description: "Kamar nyaman dengan pemandangan",
-			url: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200&auto=format&fit=crop",
+			title: "Suasana Penginapan",
+			description: "Area glamping dan penginapan",
+			url: "/kabut-tipis-asset/foto/4.png",
 			thumbnailUrl: null,
 			type: "photo",
 			category: "penginapan",
-			sortOrder: 5,
-		},
-		{
-			id: "gal-6",
-			title: "Area Camping",
-			description: "Tenda di tengah alam terbuka",
-			url: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1200&auto=format&fit=crop",
-			thumbnailUrl: null,
-			type: "photo",
-			category: "rekreasi",
-			sortOrder: 6,
-		},
-		{
-			id: "gal-7",
-			title: "Aliran Sungai",
-			description: "Gemericik air sungai yang menenangkan",
-			url: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop",
-			thumbnailUrl: null,
-			type: "photo",
-			category: "rekreasi",
-			sortOrder: 7,
-		},
-		{
-			id: "gal-8",
-			title: "Kopi Pagi",
-			description: "Secangkir kopi hangat di pagi hari",
-			url: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop",
-			thumbnailUrl: null,
-			type: "photo",
-			category: "coffeeshop",
-			sortOrder: 8,
-		},
-		{
-			id: "gal-9",
-			title: "Sunrise View",
-			description: "Momen matahari terbit dari area utama",
-			url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop",
-			thumbnailUrl: null,
-			type: "photo",
-			category: "rekreasi",
-			sortOrder: 9,
+			sortOrder: 4,
 		},
 	]);
 
