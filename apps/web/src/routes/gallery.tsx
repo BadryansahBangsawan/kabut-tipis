@@ -98,7 +98,7 @@ function GalleryContent() {
 	return (
 		<>
 			{/* Filter tabs */}
-			<div className="flex flex-wrap gap-2">
+			<div className="flex flex-wrap justify-center gap-2">
 				{FILTER_TABS.map((tab) => (
 					<button
 						key={tab.id}

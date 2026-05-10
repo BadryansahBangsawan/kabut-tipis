@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import tailwindcss from "@tailwindcss/vite";
@@ -10,7 +10,14 @@ import { defineConfig } from "vite";
 const alchemyConfigPath = fileURLToPath(
 	new URL("./.alchemy/local/wrangler.jsonc", import.meta.url),
 );
-const shouldUseAlchemy = existsSync(alchemyConfigPath);
+
+// Workerd (Cloudflare Workers) cannot access the local filesystem,
+// so file: database URLs are incompatible. Skip alchemy in that case
+// and fall back to Node.js/Bun runtime for local dev.
+const envPath = fileURLToPath(new URL("./.env", import.meta.url));
+const isLocalFileDb = existsSync(envPath) &&
+	/^DATABASE_URL=file:/m.test(readFileSync(envPath, "utf-8"));
+const shouldUseAlchemy = existsSync(alchemyConfigPath) && !isLocalFileDb;
 const cloudflareWorkersShimPath = fileURLToPath(
 	new URL("../../packages/env/src/cloudflare-local.ts", import.meta.url),
 );

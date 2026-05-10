@@ -26,8 +26,7 @@ export const Route = createFileRoute("/about")({
 });
 
 // ─── Data ────────────────────────────────────────────────────────────────────
-const STORY_IMAGE =
-	"https://images.unsplash.com/photo-1501854140801-50d01698950b?q=85&w=1800&auto=format&fit=crop";
+const STORY_IMAGE = "/kabut-tipis-asset/foto/4.png";
 
 const keunggulan = [
 	{

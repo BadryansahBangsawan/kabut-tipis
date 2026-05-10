@@ -45,8 +45,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 			},
 			{
 				property: "og:image",
-				content:
-					"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=85&w=1200&auto=format&fit=crop",
+				content: "/kabut-tipis-asset/foto/1.png",
 			},
 			// Twitter
 			{ name: "twitter:card", content: "summary_large_image" },
@@ -57,7 +56,14 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 					"Tempat rekreasi, coffeeshop, dan penginapan dengan pemandangan gunung, sawah, dan aliran sungai.",
 			},
 		],
-		links: [{ rel: "stylesheet", href: appCss }],
+		links: [
+			{ rel: "stylesheet", href: appCss },
+			{
+				rel: "icon",
+				href: "/logo/logo-kabut-tipis-no-remove-bg.png",
+				type: "image/png",
+			},
+		],
 	}),
 
 	component: RootDocument,

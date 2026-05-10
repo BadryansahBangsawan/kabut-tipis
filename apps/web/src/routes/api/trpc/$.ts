@@ -1,9 +1,11 @@
-import { createContext } from "@kabut-tipis/api/context";
-import { appRouter } from "@kabut-tipis/api/routers/index";
 import { createFileRoute } from "@tanstack/react-router";
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
-function handler({ request }: { request: Request }) {
+async function handler({ request }: { request: Request }) {
+	const { createContext } = await import("@kabut-tipis/api/context");
+	const { appRouter } = await import("@kabut-tipis/api/routers/index");
+	const { fetchRequestHandler } = await import(
+		"@trpc/server/adapters/fetch"
+	);
 	return fetchRequestHandler({
 		req: request,
 		router: appRouter,

@@ -8,8 +8,7 @@ import {
 } from "@kabut-tipis/ui/components/card";
 import { ArrowRight, Mountain, Waves } from "lucide-react";
 
-const ABOUT_IMAGE =
-	"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=85&w=1200&auto=format&fit=crop";
+const ABOUT_IMAGE = "/kabut-tipis-asset/foto/3.png";
 
 export default function AboutSnippet() {
 	return (

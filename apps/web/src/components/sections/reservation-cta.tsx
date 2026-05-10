@@ -1,8 +1,7 @@
 import { buttonVariants } from "@kabut-tipis/ui/components/button";
 import { CalendarCheck, MessageCircle } from "lucide-react";
 
-const CTA_IMAGE =
-	"https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=85&w=1800&auto=format&fit=crop";
+const CTA_IMAGE = "/kabut-tipis-asset/foto/4.png";
 
 export default function ReservationCTA() {
 	return (

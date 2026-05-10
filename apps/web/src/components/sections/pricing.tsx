@@ -1,59 +1,143 @@
 import { Badge } from "@kabut-tipis/ui/components/badge";
 import { buttonVariants } from "@kabut-tipis/ui/components/button";
 import { cn } from "@kabut-tipis/ui/lib/utils";
-import { CheckIcon, SparklesIcon } from "lucide-react";
+import {
+	CheckIcon,
+	FlameIcon,
+	SparklesIcon,
+	TentIcon,
+	TicketIcon,
+} from "lucide-react";
+import { useState } from "react";
 
-// ─── Data ──────────────────────────────────────────────────────────────────
-const FEATURED = {
-	id: "rekreasi-harian",
-	badge: "Populer",
-	name: "Rekreasi Harian",
-	price: "Rp25.000",
-	duration: "per orang",
+// ─── Data: Paket ───────────────────────────────────────────────────────────
+const GLAMPING_EMBUN = {
+	id: "glamping-embun",
+	name: "Glamping Embun",
+	startPrice: "Rp700.000",
+	duration: "per malam",
+	rates: [
+		{ period: "Senin–Kamis", tiers: ["4 orang — Rp700.000", "5 orang — Rp800.000"] },
+		{ period: "Jumat–Minggu", tiers: ["4 orang — Rp900.000", "5 orang — Rp1.000.000"] },
+	],
 	features: [
-		"Cocok untuk kunjungan santai harian",
-		"Akses area rekreasi sawah & gunung",
-		"Voucher minuman pilihan coffeeshop",
-		"Reservasi meja via WhatsApp mudah",
+		"Check-in 14.00 / Check-out 11.00",
+		"Kapasitas maks. 5 orang dewasa",
+		"Anak di bawah 2 tahun gratis",
+		"Free air mineral 1,5 liter",
+		"Tenda, kasur, selimut, bantal lengkap",
 	],
 };
 
-const SMALL_CARDS = [
+const TIKET_MASUK = {
+	id: "tiket-masuk",
+	badge: "Tiket Masuk",
+	price: "Rp5.000",
+	duration: "per orang",
+	features: [
+		"Akses area rekreasi Kabutipis",
+		"Belum termasuk glamping & coffeeshop",
+	],
+};
+
+const GLAMPING_KAWA = {
+	id: "glamping-kawa",
+	badge: "Camping",
+	startPrice: "Rp500.000",
+	duration: "per malam",
+	rates: [
+		{ period: "Senin–Kamis", tiers: ["2 orang — Rp500.000", "3 orang — Rp600.000"] },
+		{ period: "Jumat–Minggu", tiers: ["2 orang — Rp700.000", "3 orang — Rp800.000"] },
+	],
+	features: [
+		"Check-in 14.00 / Check-out 11.00",
+		"Kapasitas maks. 3 orang dewasa",
+		"Anak di bawah 2 tahun gratis",
+		"Free air mineral 1,5 liter",
+	],
+};
+
+const GRILL_CHILL = {
+	id: "grill-chill",
+	badge: "BBQ",
+	startPrice: "Rp350.000",
+	duration: "per paket",
+	tiers: [
+		{ name: "2–3 pax", price: "Rp350.000" },
+		{ name: "4–5 pax", price: "Rp500.000" },
+		{ name: "6–8 pax", price: "Rp800.000" },
+	],
+	features: [
+		"Tenda, kursi, meja disediakan",
+		"Daging sapi, sosis, sayuran, nasi",
+		"Peralatan masak lengkap",
+		"Durasi 3 jam",
+	],
+};
+
+// ─── Data: Menu ────────────────────────────────────────────────────────────
+const MENU_TABS = [
 	{
-		id: "meja-keluarga",
-		badge: "Keluarga",
-		price: "Rp120.000",
-		duration: "per grup",
-		features: [
-			"Kapasitas 4–6 tamu dalam satu meja",
-			"Posisi prioritas dekat view utama",
-			"Cocok untuk arisan atau gathering kecil",
+		id: "coffee",
+		label: "Coffee",
+		items: [
+			{ name: "Aren", price: "Rp28.000" },
+			{ name: "Coffee Milk", price: "Rp28.000" },
+			{ name: "Latte", price: "Rp25.000" },
+			{ name: "Americano", price: "Rp15.000" },
+			{ name: "Pandan Coffee", price: "Rp28.000" },
+			{ name: "Avocado Coffee", price: "Rp28.000" },
 		],
-		colSpan: "lg:col-span-3",
 	},
 	{
-		id: "camping-santai",
-		badge: "Outdoor",
-		price: "Rp180.000",
-		duration: "per malam",
-		features: [
-			"Area tenda pribadi di lahan alam",
-			"Akses toilet & fasilitas dasar",
-			"Nikmati view sawah saat pagi hari",
+		id: "non-coffee",
+		label: "Non-Coffee",
+		items: [
+			{ name: "Kabutipis Signature", price: "Rp28.000" },
+			{ name: "Regal Brown Sugar", price: "Rp28.000" },
+			{ name: "Brown Sugar Jelly", price: "Rp28.000" },
+			{ name: "Chocolate", price: "Rp28.000" },
+			{ name: "Milk Brown Sugar", price: "Rp25.000" },
+			{ name: "Klepon Pandan", price: "Rp28.000" },
+			{ name: "Matcha", price: "Rp28.000" },
+			{ name: "Air Mineral", price: "Rp5.000" },
 		],
-		colSpan: "lg:col-span-4",
 	},
 	{
-		id: "staycation",
-		badge: "Menginap",
-		price: "Rp350.000",
-		duration: "per malam",
-		features: [
-			"Kamar privat dengan suasana alam",
-			"Sarapan ringan sudah termasuk",
-			"Akses penuh area rekreasi Kabut Tipis",
+		id: "fresh-drink",
+		label: "Fresh Drink",
+		items: [
+			{ name: "Lemon Tea", price: "Rp25.000" },
+			{ name: "Sunkist Orange", price: "Rp25.000" },
+			{ name: "Markisa", price: "Rp25.000" },
+			{ name: "Watermelon", price: "Rp25.000" },
 		],
-		colSpan: "lg:col-span-4",
+	},
+	{
+		id: "food",
+		label: "Food",
+		items: [
+			{ name: "Indomie Soto", price: "Rp15.000" },
+			{ name: "Indomie Soto + Telur", price: "Rp20.000" },
+			{ name: "Indomie Goreng", price: "Rp15.000" },
+			{ name: "Indomie Goreng + Telur", price: "Rp20.000" },
+			{ name: "Topping Bakso", price: "Rp10.000" },
+			{ name: "Nasi Ayam Goreng", price: "Rp35.000" },
+			{ name: "Nasi Tuna Asap", price: "Rp35.000" },
+			{ name: "Nasi Daging Lada Hitam", price: "Rp35.000" },
+		],
+	},
+	{
+		id: "snack",
+		label: "Snack",
+		items: [
+			{ name: "Kentang Goreng", price: "Rp20.000" },
+			{ name: "Pisang Goreng Original", price: "Rp22.000" },
+			{ name: "Pisang Goreng Palm Sugar", price: "Rp28.000" },
+			{ name: "Pisang Goreng Coklat", price: "Rp25.000" },
+			{ name: "Pisang Goreng Coklat Keju", price: "Rp28.000" },
+			{ name: "Pisang Goreng Sambel", price: "Rp25.000" },
+		],
 	},
 ];
 
@@ -66,141 +150,327 @@ function FilledCheck() {
 	);
 }
 
-function SmallCard({
-	id,
-	badge,
-	price,
-	duration,
-	features,
-	colSpan,
-}: (typeof SMALL_CARDS)[number]) {
+function RateGroup({ period, tiers }: { period: string; tiers: string[] }) {
 	return (
-		<div
-			className={cn(
-				"relative overflow-hidden rounded-md border border-foreground/10 bg-background",
-				"backdrop-blur supports-[backdrop-filter]:bg-background/10",
-				colSpan,
-			)}
-		>
-			{/* Header row: badge + CTA */}
-			<div className="flex items-center gap-3 p-4">
-				<Badge variant="secondary">{badge}</Badge>
-				<div className="ml-auto">
-					<a
-						className={buttonVariants({ variant: "outline", size: "sm" })}
-						href={`/reservation?paket=${id}`}
-					>
-						Reservasi
-					</a>
-				</div>
-			</div>
-
-			{/* Price */}
-			<div className="flex items-end gap-2 px-4 py-2">
-				<span className="font-mono font-semibold text-5xl tracking-tight">
-					{price}
-				</span>
-				<span className="pb-1 text-muted-foreground text-sm">{duration}</span>
-			</div>
-
-			{/* Features */}
-			<ul className="grid gap-4 p-4 text-muted-foreground text-sm">
-				{features.map((f) => (
-					<li key={f} className="flex items-center gap-3">
-						<FilledCheck />
-						<span>{f}</span>
-					</li>
-				))}
-			</ul>
+		<div className="flex flex-col gap-1.5">
+			<p className="font-medium text-foreground text-xs">{period}</p>
+			{tiers.map((t) => (
+				<p key={t} className="text-muted-foreground text-sm">{t}</p>
+			))}
 		</div>
 	);
 }
 
 // ─── Main export ────────────────────────────────────────────────────────────
 export default function Pricing() {
+	const [activeMenu, setActiveMenu] = useState("coffee");
+	const currentMenu = MENU_TABS.find((t) => t.id === activeMenu) ?? MENU_TABS[0];
+
 	return (
 		<section className="bg-background px-5 py-20 md:py-28">
-			<div className="mx-auto flex w-full max-w-6xl flex-col gap-10">
-				{/* Section header */}
-				<div className="mx-auto flex max-w-3xl flex-col gap-4 text-center">
-					<p className="font-semibold text-primary text-sm uppercase tracking-normal">
-						Paket
-					</p>
-					<h2 className="font-bold text-4xl leading-tight md:text-5xl">
-						Pilih paket yang paling cocok untuk kunjunganmu.
-					</h2>
-					<p className="text-muted-foreground text-sm leading-7 md:text-base">
-						Harga awal dapat disesuaikan dengan jumlah tamu dan kebutuhan acara.
-					</p>
-				</div>
+			<div className="mx-auto flex w-full max-w-6xl flex-col gap-16">
+				{/* ── Paket Section ── */}
+				<div className="flex flex-col gap-10">
+					<div className="mx-auto flex max-w-3xl flex-col gap-4 text-center">
+						<p className="font-semibold text-primary text-sm uppercase tracking-normal">
+							Paket & Harga
+						</p>
+						<h2 className="font-bold text-4xl leading-tight md:text-5xl">
+							Pilih paket yang paling cocok untuk kunjunganmu.
+						</h2>
+						<p className="text-muted-foreground text-sm leading-7 md:text-base">
+							Harga dapat berbeda di hari biasa dan akhir pekan. Reservasi via
+							WhatsApp.
+						</p>
+					</div>
 
-				{/* Bento grid */}
-				<div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-8">
-					{/* ── Featured card ── */}
-					<div
-						className={cn(
-							"relative w-full overflow-hidden rounded-md border border-foreground/10 bg-background",
-							"backdrop-blur supports-[backdrop-filter]:bg-background/10",
-							"lg:col-span-5",
-						)}
-					>
-						{/* Decorative mesh overlay */}
-						<div className="pointer-events-none absolute top-0 left-1/2 -mt-2 -ml-20 h-full w-full [mask-image:linear-gradient(white,transparent)]">
-							<div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-primary/2 [mask-image:radial-gradient(farthest-side_at_top,white,transparent)]">
-								<div
-									aria-hidden="true"
-									className={cn(
-										"absolute inset-0 size-full mix-blend-overlay",
-										"bg-[linear-gradient(to_right,color-mix(in_oklch,var(--primary)_8%,transparent)_1px,transparent_1px)]",
-										"bg-[size:24px]",
-									)}
-								/>
+					{/* Bento grid */}
+					<div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-8">
+						{/* ── Glamping Embun (featured) ── */}
+						<div
+							className={cn(
+								"relative flex flex-col overflow-hidden rounded-md border border-foreground/10 bg-background",
+								"md:col-span-2 lg:col-span-5",
+							)}
+						>
+							{/* Decorative mesh */}
+							<div className="pointer-events-none absolute top-0 left-1/2 -mt-2 -ml-20 h-full w-full [mask-image:linear-gradient(white,transparent)]">
+								<div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-primary/2 [mask-image:radial-gradient(farthest-side_at_top,white,transparent)]">
+									<div
+										aria-hidden="true"
+										className={cn(
+											"absolute inset-0 size-full mix-blend-overlay",
+											"bg-[linear-gradient(to_right,color-mix(in_oklch,var(--primary)_8%,transparent)_1px,transparent_1px)]",
+											"bg-[size:24px]",
+										)}
+									/>
+								</div>
 							</div>
-						</div>
 
-						{/* Header row: badges + CTA */}
-						<div className="relative flex flex-wrap items-center gap-3 p-4">
-							<Badge variant="default">{FEATURED.badge}</Badge>
-							<Badge className="hidden lg:flex" variant="outline">
-								<SparklesIcon className="me-1 size-3" />
-								Paling direkomendasikan
-							</Badge>
-							<div className="ml-auto">
-								<a
-									className={buttonVariants()}
-									href={`/reservation?paket=${FEATURED.id}`}
-								>
-									Reservasi Sekarang
-								</a>
+							{/* Badges */}
+							<div className="relative flex flex-wrap items-center gap-2 p-5 pb-0">
+								<Badge variant="default">
+									<TentIcon className="me-1 size-3" />
+									Glamping
+								</Badge>
+								<Badge className="hidden sm:flex" variant="outline">
+									<SparklesIcon className="me-1 size-3" />
+									Paling direkomendasikan
+								</Badge>
 							</div>
-						</div>
 
-						{/* Price + features — side by side on lg */}
-						<div className="relative flex flex-col p-4 lg:flex-row">
-							<div className="pb-4 lg:w-[30%]">
-								<span className="font-mono font-semibold text-5xl tracking-tight">
-									{FEATURED.price}
-								</span>
-								<span className="text-muted-foreground text-sm">
-									{" "}
-									/ {FEATURED.duration}
-								</span>
+							{/* Price */}
+							<div className="relative px-5 pt-4">
+								<p className="text-muted-foreground text-xs">mulai dari</p>
+								<p className="font-mono font-bold text-5xl tracking-tight">
+									{GLAMPING_EMBUN.startPrice}
+								</p>
+								<p className="mt-1 text-muted-foreground text-sm">
+									{GLAMPING_EMBUN.duration}
+								</p>
 							</div>
-							<ul className="grid gap-4 text-muted-foreground text-sm lg:w-[70%]">
-								{FEATURED.features.map((f) => (
+
+							{/* Divider */}
+							<div className="relative mx-5 my-5 border-t border-border/60" />
+
+							{/* Rates */}
+							<div className="relative grid grid-cols-2 gap-4 px-5">
+								{GLAMPING_EMBUN.rates.map((r) => (
+									<RateGroup
+										key={r.period}
+										period={r.period}
+										tiers={r.tiers}
+									/>
+								))}
+							</div>
+
+							{/* Divider */}
+							<div className="relative mx-5 my-5 border-t border-border/60" />
+
+							{/* Features */}
+							<ul className="relative flex flex-1 flex-col gap-3 px-5 text-muted-foreground text-sm">
+								{GLAMPING_EMBUN.features.map((f) => (
 									<li key={f} className="flex items-center gap-3">
 										<FilledCheck />
 										<span className="leading-relaxed">{f}</span>
 									</li>
 								))}
 							</ul>
+
+							{/* CTA */}
+							<div className="relative p-5 pt-6">
+								<a
+									className={buttonVariants()}
+									href={`/reservation?paket=${GLAMPING_EMBUN.id}`}
+								>
+									Reservasi Sekarang
+								</a>
+							</div>
+						</div>
+
+						{/* ── Tiket Masuk ── */}
+						<div className="relative flex flex-col overflow-hidden rounded-md border border-foreground/10 bg-background lg:col-span-3">
+							<div className="p-5 pb-0">
+								<Badge variant="secondary">
+									<TicketIcon className="me-1 size-3" />
+									{TIKET_MASUK.badge}
+								</Badge>
+							</div>
+
+							<div className="px-5 pt-3">
+								<p className="font-mono font-semibold text-4xl tracking-tight">
+									{TIKET_MASUK.price}
+								</p>
+								<p className="mt-1 text-muted-foreground text-xs">
+									{TIKET_MASUK.duration}
+								</p>
+							</div>
+
+							<div className="mx-5 my-4 border-t border-border/60" />
+
+							<ul className="flex flex-1 flex-col gap-3 px-5 text-muted-foreground text-sm">
+								{TIKET_MASUK.features.map((f) => (
+									<li key={f} className="flex items-start gap-2.5">
+										<FilledCheck />
+										<span className="leading-relaxed">{f}</span>
+									</li>
+								))}
+							</ul>
+
+							<div className="p-5 pt-5">
+								<a
+									className={cn(
+										buttonVariants({ variant: "outline", size: "sm" }),
+										"w-full",
+									)}
+									href={`/reservation?paket=${TIKET_MASUK.id}`}
+								>
+									Reservasi
+								</a>
+							</div>
+						</div>
+
+						{/* ── Glamping Kawa ── */}
+						<div className="relative flex flex-col overflow-hidden rounded-md border border-foreground/10 bg-background lg:col-span-4">
+							<div className="p-5 pb-0">
+								<Badge variant="secondary">
+									<TentIcon className="me-1 size-3" />
+									{GLAMPING_KAWA.badge}
+								</Badge>
+							</div>
+
+							<div className="px-5 pt-3">
+								<p className="text-muted-foreground text-xs">mulai dari</p>
+								<p className="font-mono font-semibold text-4xl tracking-tight">
+									{GLAMPING_KAWA.startPrice}
+								</p>
+								<p className="mt-1 text-muted-foreground text-xs">
+									{GLAMPING_KAWA.duration}
+								</p>
+							</div>
+
+							<div className="mx-5 my-4 border-t border-border/60" />
+
+							<div className="grid grid-cols-2 gap-4 px-5">
+								{GLAMPING_KAWA.rates.map((r) => (
+									<RateGroup
+										key={r.period}
+										period={r.period}
+										tiers={r.tiers}
+									/>
+								))}
+							</div>
+
+							<div className="mx-5 my-4 border-t border-border/60" />
+
+							<ul className="flex flex-1 flex-col gap-3 px-5 text-muted-foreground text-sm">
+								{GLAMPING_KAWA.features.map((f) => (
+									<li key={f} className="flex items-start gap-2.5">
+										<FilledCheck />
+										<span className="leading-relaxed">{f}</span>
+									</li>
+								))}
+							</ul>
+
+							<div className="p-5 pt-5">
+								<a
+									className={cn(
+										buttonVariants({ variant: "outline", size: "sm" }),
+										"w-full",
+									)}
+									href={`/reservation?paket=${GLAMPING_KAWA.id}`}
+								>
+									Reservasi
+								</a>
+							</div>
+						</div>
+
+						{/* ── Grill & Chill ── */}
+						<div className="relative flex flex-col overflow-hidden rounded-md border border-foreground/10 bg-background lg:col-span-4">
+							<div className="p-5 pb-0">
+								<Badge variant="secondary">
+									<FlameIcon className="me-1 size-3" />
+									{GRILL_CHILL.badge}
+								</Badge>
+							</div>
+
+							<div className="px-5 pt-3">
+								<p className="text-muted-foreground text-xs">mulai dari</p>
+								<p className="font-mono font-semibold text-4xl tracking-tight">
+									{GRILL_CHILL.startPrice}
+								</p>
+								<p className="mt-1 text-muted-foreground text-xs">
+									{GRILL_CHILL.duration}
+								</p>
+							</div>
+
+							<div className="mx-5 my-4 border-t border-border/60" />
+
+							{/* Tier table */}
+							<div className="flex flex-col gap-2 px-5">
+								{GRILL_CHILL.tiers.map((t) => (
+									<div
+										key={t.name}
+										className="flex items-center justify-between text-sm"
+									>
+										<span className="text-muted-foreground">{t.name}</span>
+										<span className="font-medium text-foreground">
+											{t.price}
+										</span>
+									</div>
+								))}
+							</div>
+
+							<div className="mx-5 my-4 border-t border-border/60" />
+
+							<ul className="flex flex-1 flex-col gap-3 px-5 text-muted-foreground text-sm">
+								{GRILL_CHILL.features.map((f) => (
+									<li key={f} className="flex items-start gap-2.5">
+										<FilledCheck />
+										<span className="leading-relaxed">{f}</span>
+									</li>
+								))}
+							</ul>
+
+							<div className="p-5 pt-5">
+								<a
+									className={cn(
+										buttonVariants({ variant: "outline", size: "sm" }),
+										"w-full",
+									)}
+									href={`/reservation?paket=${GRILL_CHILL.id}`}
+								>
+									Reservasi
+								</a>
+							</div>
 						</div>
 					</div>
+				</div>
 
-					{/* ── Small cards ── */}
-					{SMALL_CARDS.map((card) => (
-						<SmallCard key={card.id} {...card} />
-					))}
+				{/* ── Menu Section ── */}
+				<div className="flex flex-col gap-8">
+					<div className="mx-auto flex max-w-3xl flex-col gap-4 text-center">
+						<p className="font-semibold text-primary text-sm uppercase tracking-normal">
+							Menu
+						</p>
+						<h2 className="font-bold text-4xl leading-tight md:text-5xl">
+							Coffeeshop & makanan.
+						</h2>
+					</div>
+
+					{/* Tabs */}
+					<div className="flex flex-wrap justify-center gap-2">
+						{MENU_TABS.map((tab) => (
+							<button
+								key={tab.id}
+								className={cn(
+									"rounded-full border px-4 py-1.5 font-medium text-sm transition-colors",
+									activeMenu === tab.id
+										? "border-primary bg-primary text-primary-foreground"
+										: "border-border bg-background text-muted-foreground hover:border-primary/60 hover:text-foreground",
+								)}
+								onClick={() => setActiveMenu(tab.id)}
+								type="button"
+							>
+								{tab.label}
+							</button>
+						))}
+					</div>
+
+					{/* Menu grid */}
+					<div className="mx-auto grid w-full max-w-2xl grid-cols-1 gap-px overflow-hidden rounded-md border border-border/60 sm:grid-cols-2">
+						{currentMenu.items.map((item) => (
+							<div
+								key={item.name}
+								className="flex items-center justify-between border-b border-border/40 bg-background px-5 py-3.5 last:border-b-0 sm:[&:nth-last-child(2):nth-child(odd)]:border-b-0"
+							>
+								<span className="text-foreground text-sm">{item.name}</span>
+								<span className="font-mono text-muted-foreground text-sm">
+									{item.price}
+								</span>
+							</div>
+						))}
+					</div>
 				</div>
 			</div>
 		</section>
