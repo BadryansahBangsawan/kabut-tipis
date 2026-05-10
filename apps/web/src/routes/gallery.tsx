@@ -1,12 +1,11 @@
+import type { AppRouter } from "@kabut-tipis/api/routers/index";
 import { Skeleton } from "@kabut-tipis/ui/components/skeleton";
 import { cn } from "@kabut-tipis/ui/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import type { inferRouterOutputs } from "@trpc/server";
 import { ImageIcon, VideoIcon } from "lucide-react";
 import { Suspense, useState } from "react";
-
-import type { AppRouter } from "@kabut-tipis/api/routers/index";
-import type { inferRouterOutputs } from "@trpc/server";
 
 import Lightbox from "../components/sections/lightbox";
 import { useTRPC } from "../utils/trpc";
