@@ -1,25 +1,26 @@
 {
-  "name": "@kabut-tipis/api",
-  "type": "module",
-  "exports": {
-    ".": {
-      "default": "./src/index.ts"
-    },
-    "./*": {
-      "default": "./src/*.ts"
-    }
-  },
-  "scripts": {},
-  "dependencies": {
-    "@kabut-tipis/db": "workspace:*",
-    "@kabut-tipis/env": "workspace:*",
-    "@trpc/client": "catalog:",
-    "@trpc/server": "catalog:",
-    "dotenv": "catalog:",
-    "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@kabut-tipis/config": "workspace:*",
-    "typescript": "catalog:"
-  }
+	"name": "@kabut-tipis/api",
+	"type": "module",
+	"exports": {
+		".": {
+			"default": "./src/index.ts"
+		},
+		"./*": {
+			"default": "./src/*.ts"
+		}
+	},
+	"scripts": {},
+	"dependencies": {
+		"@kabut-tipis/db": "workspace:*",
+		"@kabut-tipis/env": "workspace:*",
+		"@trpc/client": "catalog:",
+		"@trpc/server": "catalog:",
+		"drizzle-orm": "^0.45.1",
+		"dotenv": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@kabut-tipis/config": "workspace:*",
+		"typescript": "catalog:"
+	}
 }
