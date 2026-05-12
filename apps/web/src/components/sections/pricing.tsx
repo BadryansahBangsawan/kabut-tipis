@@ -161,6 +161,10 @@ function RateGroup({ period, tiers }: { period: string; tiers: string[] }) {
 	);
 }
 
+function CardDivider({ loose }: { loose?: boolean }) {
+	return <div className={cn("mx-5 border-t border-border/60", loose ? "my-5" : "my-4")} />;
+}
+
 // ─── Main export ────────────────────────────────────────────────────────────
 export default function Pricing() {
 	const [activeMenu, setActiveMenu] = useState("coffee");
@@ -231,7 +235,7 @@ export default function Pricing() {
 							</div>
 
 							{/* Divider */}
-							<div className="relative mx-5 my-5 border-t border-border/60" />
+							<CardDivider loose />
 
 							{/* Rates */}
 							<div className="relative grid grid-cols-2 gap-4 px-5">
@@ -245,7 +249,7 @@ export default function Pricing() {
 							</div>
 
 							{/* Divider */}
-							<div className="relative mx-5 my-5 border-t border-border/60" />
+							<CardDivider loose />
 
 							{/* Features */}
 							<ul className="relative flex flex-1 flex-col gap-3 px-5 text-muted-foreground text-sm">
@@ -286,7 +290,7 @@ export default function Pricing() {
 								</p>
 							</div>
 
-							<div className="mx-5 my-4 border-t border-border/60" />
+							<CardDivider />
 
 							<ul className="flex flex-1 flex-col gap-3 px-5 text-muted-foreground text-sm">
 								{TIKET_MASUK.features.map((f) => (
@@ -329,7 +333,7 @@ export default function Pricing() {
 								</p>
 							</div>
 
-							<div className="mx-5 my-4 border-t border-border/60" />
+							<CardDivider />
 
 							<div className="grid grid-cols-2 gap-4 px-5">
 								{GLAMPING_KAWA.rates.map((r) => (
@@ -341,7 +345,7 @@ export default function Pricing() {
 								))}
 							</div>
 
-							<div className="mx-5 my-4 border-t border-border/60" />
+							<CardDivider />
 
 							<ul className="flex flex-1 flex-col gap-3 px-5 text-muted-foreground text-sm">
 								{GLAMPING_KAWA.features.map((f) => (
@@ -384,7 +388,7 @@ export default function Pricing() {
 								</p>
 							</div>
 
-							<div className="mx-5 my-4 border-t border-border/60" />
+							<CardDivider />
 
 							{/* Tier table */}
 							<div className="flex flex-col gap-2 px-5">
@@ -401,7 +405,7 @@ export default function Pricing() {
 								))}
 							</div>
 
-							<div className="mx-5 my-4 border-t border-border/60" />
+							<CardDivider />
 
 							<ul className="flex flex-1 flex-col gap-3 px-5 text-muted-foreground text-sm">
 								{GRILL_CHILL.features.map((f) => (

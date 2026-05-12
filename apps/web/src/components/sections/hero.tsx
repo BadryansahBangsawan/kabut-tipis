@@ -13,43 +13,31 @@ export default function Hero() {
 	const touchStartYRef = useRef(0);
 
 	const [progress, setProgress] = useState(0);
-	const [expanded, setExpanded] = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
 
 	useEffect(() => {
-		const check = () => setIsMobile(window.innerWidth < 768);
-		check();
+		let prev = window.innerWidth < 768;
+		setIsMobile(prev);
+		const check = () => {
+			const next = window.innerWidth < 768;
+			if (next !== prev) { prev = next; setIsMobile(next); }
+		};
 		window.addEventListener("resize", check);
 		return () => window.removeEventListener("resize", check);
 	}, []);
 
 	const applyProgress = useCallback((next: number) => {
 		progressRef.current = next;
+		expandedRef.current = next >= 1;
 		setProgress(next);
-		if (next >= 1 && !expandedRef.current) {
-			expandedRef.current = true;
-			setExpanded(true);
-		} else if (next < 1 && expandedRef.current) {
-			expandedRef.current = false;
-			setExpanded(false);
-		}
 	}, []);
 
 	useEffect(() => {
 		const handleWheel = (e: WheelEvent) => {
-			if (expandedRef.current && window.scrollY <= 5 && e.deltaY < 0) {
-				e.preventDefault();
-				const delta = e.deltaY * 0.0009;
-				const next = Math.min(Math.max(progressRef.current + delta, 0), 1);
-				applyProgress(next);
-				return;
-			}
-			if (!expandedRef.current) {
-				e.preventDefault();
-				const delta = e.deltaY * 0.0009;
-				const next = Math.min(Math.max(progressRef.current + delta, 0), 1);
-				applyProgress(next);
-			}
+			if (expandedRef.current && !(window.scrollY <= 5 && e.deltaY < 0)) return;
+			e.preventDefault();
+			const next = Math.min(Math.max(progressRef.current + e.deltaY * 0.0009, 0), 1);
+			applyProgress(next);
 		};
 
 		const handleTouchStart = (e: TouchEvent) => {
@@ -59,31 +47,16 @@ export default function Hero() {
 		const handleTouchMove = (e: TouchEvent) => {
 			const touchY = e.touches[0].clientY;
 			const deltaY = touchStartYRef.current - touchY;
-
-			if (expandedRef.current && window.scrollY <= 5 && deltaY < 0) {
-				e.preventDefault();
-				const next = Math.min(
-					Math.max(progressRef.current + deltaY * 0.008, 0),
-					1,
-				);
-				applyProgress(next);
-				touchStartYRef.current = touchY;
-				return;
-			}
-			if (!expandedRef.current) {
-				e.preventDefault();
-				const factor = deltaY > 0 ? 0.005 : 0.008;
-				const next = Math.min(
-					Math.max(progressRef.current + deltaY * factor, 0),
-					1,
-				);
-				applyProgress(next);
-				touchStartYRef.current = touchY;
-			}
+			if (expandedRef.current && !(window.scrollY <= 5 && deltaY < 0)) return;
+			e.preventDefault();
+			const factor = !expandedRef.current && deltaY > 0 ? 0.005 : 0.008;
+			const next = Math.min(Math.max(progressRef.current + deltaY * factor, 0), 1);
+			applyProgress(next);
+			touchStartYRef.current = touchY;
 		};
 
 		const handleScroll = () => {
-			if (!expandedRef.current) window.scrollTo(0, 0);
+			if (!expandedRef.current && window.scrollY > 0) window.scrollTo(0, 0);
 		};
 
 		window.addEventListener("wheel", handleWheel, { passive: false });
@@ -105,7 +78,7 @@ export default function Hero() {
 	const textShift = progress * (isMobile ? 180 : 150);
 	const bgOpacity = 1 - progress;
 	const hintOpacity = Math.max(0, 1 - progress * 3.5);
-	const ctaOpacity = expanded ? 1 : 0;
+	const ctaOpacity = progress >= 1 ? 1 : 0;
 
 	return (
 		<section className="relative min-h-dvh overflow-hidden">
@@ -121,9 +94,7 @@ export default function Hero() {
 			<div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-foreground/35 to-transparent" />
 			<div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-background to-transparent" />
 
-			{/* Main layout */}
 			<div className="relative flex h-dvh flex-col items-center justify-center px-5 pt-16 text-center">
-				{/* Expanding media container — video */}
 				<div
 					className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden shadow-2xl shadow-foreground/25 ring-1 ring-background/40"
 					style={{
@@ -150,7 +121,6 @@ export default function Hero() {
 					/>
 				</div>
 
-				{/* Title */}
 				<div className="relative z-10 flex flex-col items-center gap-0 text-[clamp(3.8rem,13vw,11rem)] text-primary-foreground leading-none md:flex-row md:gap-8">
 					<h1
 						className="font-extrabold drop-shadow-2xl"
@@ -172,7 +142,6 @@ export default function Hero() {
 					</h1>
 				</div>
 
-				{/* Scroll hint */}
 				<div
 					className="relative z-10 mt-4 flex flex-col items-center gap-3 sm:flex-row"
 					style={{ opacity: hintOpacity, transition: "opacity 0.15s" }}
@@ -186,7 +155,6 @@ export default function Hero() {
 					</span>
 				</div>
 
-				{/* CTA */}
 				<div
 					className="relative z-10 mt-6 flex flex-col items-center gap-3 sm:flex-row"
 					style={{ opacity: ctaOpacity, transition: "opacity 0.5s" }}
