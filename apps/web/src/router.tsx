@@ -28,13 +28,16 @@ export const queryClient = new QueryClient({
 
 function getBaseUrl() {
 	if (typeof window !== "undefined") return ""; // browser: pakai relative URL
-	// SSR on Cloudflare Workers needs an absolute URL — localhost doesn't exist there
-	return (
-		import.meta.env.VITE_APP_URL ??
-		(import.meta.env.PROD
-			? "https://kabuttipis.badry.asia"
-			: "http://localhost:3001")
-	);
+	const configuredUrl = import.meta.env.VITE_APP_URL;
+
+	if (configuredUrl && !configuredUrl.includes("localhost")) {
+		return configuredUrl;
+	}
+
+	// SSR on Cloudflare Workers needs an absolute URL. Localhost only exists in dev.
+	return import.meta.env.PROD
+		? "https://kabuttipis.badry.asia"
+		: (configuredUrl ?? "http://localhost:3001");
 }
 
 const trpcClient = createTRPCClient<AppRouter>({
