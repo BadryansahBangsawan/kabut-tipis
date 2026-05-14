@@ -10,15 +10,23 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+import { RESERVATION_PACKAGE_IDS } from "./pricing.data";
+
 // ─── Data: Paket ───────────────────────────────────────────────────────────
 const GLAMPING_EMBUN = {
-	id: "glamping-embun",
+	id: RESERVATION_PACKAGE_IDS.glampingEmbun,
 	name: "Glamping Embun",
 	startPrice: "Rp700.000",
 	duration: "per malam",
 	rates: [
-		{ period: "Senin–Kamis", tiers: ["4 orang — Rp700.000", "5 orang — Rp800.000"] },
-		{ period: "Jumat–Minggu", tiers: ["4 orang — Rp900.000", "5 orang — Rp1.000.000"] },
+		{
+			period: "Senin–Kamis",
+			tiers: ["4 orang — Rp700.000", "5 orang — Rp800.000"],
+		},
+		{
+			period: "Jumat–Minggu",
+			tiers: ["4 orang — Rp900.000", "5 orang — Rp1.000.000"],
+		},
 	],
 	features: [
 		"Check-in 14.00 / Check-out 11.00",
@@ -30,7 +38,7 @@ const GLAMPING_EMBUN = {
 };
 
 const TIKET_MASUK = {
-	id: "tiket-masuk",
+	id: RESERVATION_PACKAGE_IDS.tiketMasuk,
 	badge: "Tiket Masuk",
 	price: "Rp5.000",
 	duration: "per orang",
@@ -41,13 +49,19 @@ const TIKET_MASUK = {
 };
 
 const GLAMPING_KAWA = {
-	id: "glamping-kawa",
+	id: RESERVATION_PACKAGE_IDS.glampingKawa,
 	badge: "Camping",
 	startPrice: "Rp500.000",
 	duration: "per malam",
 	rates: [
-		{ period: "Senin–Kamis", tiers: ["2 orang — Rp500.000", "3 orang — Rp600.000"] },
-		{ period: "Jumat–Minggu", tiers: ["2 orang — Rp700.000", "3 orang — Rp800.000"] },
+		{
+			period: "Senin–Kamis",
+			tiers: ["2 orang — Rp500.000", "3 orang — Rp600.000"],
+		},
+		{
+			period: "Jumat–Minggu",
+			tiers: ["2 orang — Rp700.000", "3 orang — Rp800.000"],
+		},
 	],
 	features: [
 		"Check-in 14.00 / Check-out 11.00",
@@ -58,7 +72,7 @@ const GLAMPING_KAWA = {
 };
 
 const GRILL_CHILL = {
-	id: "grill-chill",
+	id: RESERVATION_PACKAGE_IDS.grillChill,
 	badge: "BBQ",
 	startPrice: "Rp350.000",
 	duration: "per paket",
@@ -155,20 +169,27 @@ function RateGroup({ period, tiers }: { period: string; tiers: string[] }) {
 		<div className="flex flex-col gap-1.5">
 			<p className="font-medium text-foreground text-xs">{period}</p>
 			{tiers.map((t) => (
-				<p key={t} className="text-muted-foreground text-sm">{t}</p>
+				<p key={t} className="text-muted-foreground text-sm">
+					{t}
+				</p>
 			))}
 		</div>
 	);
 }
 
 function CardDivider({ loose }: { loose?: boolean }) {
-	return <div className={cn("mx-5 border-t border-border/60", loose ? "my-5" : "my-4")} />;
+	return (
+		<div
+			className={cn("mx-5 border-border/60 border-t", loose ? "my-5" : "my-4")}
+		/>
+	);
 }
 
 // ─── Main export ────────────────────────────────────────────────────────────
 export default function Pricing() {
 	const [activeMenu, setActiveMenu] = useState("coffee");
-	const currentMenu = MENU_TABS.find((t) => t.id === activeMenu) ?? MENU_TABS[0];
+	const currentMenu =
+		MENU_TABS.find((t) => t.id === activeMenu) ?? MENU_TABS[0];
 
 	return (
 		<section className="bg-background px-5 py-20 md:py-28">
@@ -226,7 +247,7 @@ export default function Pricing() {
 							{/* Price */}
 							<div className="relative px-5 pt-4">
 								<p className="text-muted-foreground text-xs">mulai dari</p>
-								<p className="font-mono font-bold text-5xl tracking-tight">
+								<p className="font-bold font-mono text-5xl tracking-tight">
 									{GLAMPING_EMBUN.startPrice}
 								</p>
 								<p className="mt-1 text-muted-foreground text-sm">
@@ -240,11 +261,7 @@ export default function Pricing() {
 							{/* Rates */}
 							<div className="relative grid grid-cols-2 gap-4 px-5">
 								{GLAMPING_EMBUN.rates.map((r) => (
-									<RateGroup
-										key={r.period}
-										period={r.period}
-										tiers={r.tiers}
-									/>
+									<RateGroup key={r.period} period={r.period} tiers={r.tiers} />
 								))}
 							</div>
 
@@ -337,11 +354,7 @@ export default function Pricing() {
 
 							<div className="grid grid-cols-2 gap-4 px-5">
 								{GLAMPING_KAWA.rates.map((r) => (
-									<RateGroup
-										key={r.period}
-										period={r.period}
-										tiers={r.tiers}
-									/>
+									<RateGroup key={r.period} period={r.period} tiers={r.tiers} />
 								))}
 							</div>
 
@@ -466,7 +479,7 @@ export default function Pricing() {
 						{currentMenu.items.map((item) => (
 							<div
 								key={item.name}
-								className="flex items-center justify-between border-b border-border/40 bg-background px-5 py-3.5 last:border-b-0 sm:[&:nth-last-child(2):nth-child(odd)]:border-b-0"
+								className="flex items-center justify-between border-border/40 border-b bg-background px-5 py-3.5 last:border-b-0 sm:[&:nth-last-child(2):nth-child(odd)]:border-b-0"
 							>
 								<span className="text-foreground text-sm">{item.name}</span>
 								<span className="font-mono text-muted-foreground text-sm">

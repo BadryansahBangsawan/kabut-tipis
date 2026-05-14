@@ -57,6 +57,13 @@ const reservationSchema = z.object({
 
 type FormFields = z.infer<typeof reservationSchema>;
 type FormErrors = Partial<Record<keyof FormFields, string>>;
+const FORM_SKELETON_FIELDS = [
+	"name",
+	"phone",
+	"date",
+	"guestCount",
+	"packageId",
+] as const;
 
 // ─── WA message builder ─────────────────────────────────────────────────────
 function buildWhatsAppUrl(
@@ -161,9 +168,12 @@ function ReservationForm() {
 	const { data: packages } = useSuspenseQuery(
 		trpc.packages.list.queryOptions(),
 	);
+	const packageFromSearch = packages.some((pkg) => pkg.id === search.paket)
+		? search.paket
+		: "";
 
 	const [fields, setFields] = useState<Partial<FormFields>>({
-		packageId: search.paket ?? "",
+		packageId: packageFromSearch ?? "",
 		guestCount: 1,
 	});
 	const [errors, setErrors] = useState<FormErrors>({});
@@ -386,8 +396,8 @@ function FormSkeleton() {
 	return (
 		<div className="flex flex-col gap-5 rounded-sm border border-border p-6">
 			<Skeleton className="h-5 w-32" />
-			{Array.from({ length: 5 }).map((_, i) => (
-				<div key={i} className="flex flex-col gap-1.5">
+			{FORM_SKELETON_FIELDS.map((field) => (
+				<div key={field} className="flex flex-col gap-1.5">
 					<Skeleton className="h-3.5 w-24" />
 					<Skeleton className="h-8 w-full" />
 				</div>

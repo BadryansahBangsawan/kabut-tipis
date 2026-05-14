@@ -1,11 +1,11 @@
 import { buttonVariants } from "@kabut-tipis/ui/components/button";
-import { cn } from "@kabut-tipis/ui/lib/utils";
 import {
-	Map,
+	Map as LocationMap,
 	MapMarker,
 	MarkerContent,
 	MarkerTooltip,
 } from "@kabut-tipis/ui/components/ui/map";
+import { cn } from "@kabut-tipis/ui/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { Clock, Copy, MapPin, MessageCircle, Phone } from "lucide-react";
 import { useState } from "react";
@@ -27,7 +27,6 @@ export const Route = createFileRoute("/contact")({
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const WA_NUMBER = "6285245055567";
 const PHONE_NUMBER = "+6285245055567";
-const EMAIL = "halo@kabuttipis.com";
 const ADDRESS =
 	"QV98+49R, Jl. Gallang Rapa, Gantarang, Kec. Tinggimoncong, Kabupaten Gowa, Sulawesi Selatan 92174";
 const INSTAGRAM = "https://www.instagram.com/kabutipiscampsite";
@@ -65,6 +64,7 @@ function InstagramIcon({ className }: { className?: string }) {
 			strokeWidth={2}
 			viewBox="0 0 24 24"
 			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
 		>
 			<rect height="20" rx="5" ry="5" width="20" x="2" y="2" />
 			<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
@@ -164,11 +164,7 @@ function ContactPage() {
 						<h2 className="font-bold text-2xl">Temukan kami di sini.</h2>
 					</div>
 					<div className="group relative h-[360px] overflow-hidden rounded-sm border border-border md:h-[460px]">
-						<Map
-							center={[LNG, LAT]}
-							zoom={15}
-							className="size-full"
-						>
+						<LocationMap center={[LNG, LAT]} zoom={15} className="size-full">
 							<MapMarker longitude={LNG} latitude={LAT}>
 								<MarkerContent>
 									<span className="flex size-8 items-center justify-center rounded-full bg-primary shadow-md">
@@ -177,7 +173,7 @@ function ContactPage() {
 								</MarkerContent>
 								<MarkerTooltip>Kabut Tipis</MarkerTooltip>
 							</MapMarker>
-						</Map>
+						</LocationMap>
 						{/* Click overlay → buka Google Maps */}
 						<a
 							className="absolute inset-0 z-10 flex items-end justify-end p-4"
@@ -185,7 +181,7 @@ function ContactPage() {
 							rel="noreferrer"
 							target="_blank"
 						>
-							<span className="flex items-center gap-2 rounded-sm bg-background/90 px-3 py-2 text-xs font-medium shadow-sm backdrop-blur-sm transition-opacity group-hover:opacity-100 opacity-80">
+							<span className="flex items-center gap-2 rounded-sm bg-background/90 px-3 py-2 font-medium text-xs opacity-80 shadow-sm backdrop-blur-sm transition-opacity group-hover:opacity-100">
 								<MapPin className="size-3 text-primary" />
 								Buka di Google Maps
 							</span>

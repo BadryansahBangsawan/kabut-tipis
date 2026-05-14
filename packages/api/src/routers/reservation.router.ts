@@ -1,27 +1,28 @@
 import { reservations, tourPackages } from "@kabut-tipis/db/schema";
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
-import { z } from "zod";
+import { and, eq, gte, or } from "drizzle-orm";
 
 import { publicProcedure, router } from "../index";
-
-const phoneSchema = z
-	.string()
-	.regex(/^(08|62|\+62)\d{8,13}$/, "Nomor WhatsApp tidak valid");
-
-const createReservationInput = z.object({
-	name: z.string().trim().min(3),
-	phone: phoneSchema,
-	date: z.string().min(1),
-	guestCount: z.number().int().min(1).max(100),
-	packageId: z.string().min(1),
-	notes: z.string().trim().max(500).optional(),
-});
+import {
+	checkReservationRateLimit,
+	createReservationInput,
+	normalizeReservationPhone,
+	RESERVATION_DEDUP_WINDOW_MS,
+} from "./reservation.validation";
 
 export const reservationRouter = router({
 	create: publicProcedure
 		.input(createReservationInput)
 		.mutation(async ({ ctx, input }) => {
+			const rateLimit = checkReservationRateLimit(ctx.req);
+
+			if (!rateLimit.allowed) {
+				throw new TRPCError({
+					code: "TOO_MANY_REQUESTS",
+					message: `Terlalu banyak percobaan reservasi. Coba lagi dalam ${rateLimit.retryAfterSeconds} detik.`,
+				});
+			}
+
 			const [selectedPackage] = await ctx.db
 				.select()
 				.from(tourPackages)
@@ -35,10 +36,38 @@ export const reservationRouter = router({
 				});
 			}
 
+			const normalizedPhone = normalizeReservationPhone(input.phone);
+			const duplicateWindowStart = new Date(
+				Date.now() - RESERVATION_DEDUP_WINDOW_MS,
+			);
+			const [duplicateReservation] = await ctx.db
+				.select({ id: reservations.id })
+				.from(reservations)
+				.where(
+					and(
+						or(
+							eq(reservations.phone, normalizedPhone),
+							eq(reservations.phone, input.phone),
+						),
+						eq(reservations.date, input.date),
+						eq(reservations.packageId, input.packageId),
+						gte(reservations.createdAt, duplicateWindowStart),
+					),
+				)
+				.limit(1);
+
+			if (duplicateReservation) {
+				throw new TRPCError({
+					code: "CONFLICT",
+					message:
+						"Reservasi serupa sudah masuk. Silakan tunggu konfirmasi atau ubah detail reservasi.",
+				});
+			}
+
 			const reservation = {
 				id: crypto.randomUUID(),
 				name: input.name,
-				phone: input.phone,
+				phone: normalizedPhone,
 				date: input.date,
 				guestCount: input.guestCount,
 				packageId: input.packageId,

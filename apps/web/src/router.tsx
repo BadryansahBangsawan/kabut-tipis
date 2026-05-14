@@ -12,19 +12,23 @@ import Loader from "./components/loader";
 import { routeTree } from "./routeTree.gen";
 import { TRPCProvider } from "./utils/trpc";
 
-export const queryClient = new QueryClient({
-	queryCache: new QueryCache({
-		onError: (error, query) => {
-			toast.error(error.message, {
-				action: {
-					label: "retry",
-					onClick: query.invalidate,
-				},
-			});
-		},
-	}),
-	defaultOptions: { queries: { staleTime: 60 * 1000 } },
-});
+function createQueryClient() {
+	return new QueryClient({
+		queryCache: new QueryCache({
+			onError: (error, query) => {
+				if (typeof window === "undefined") return;
+
+				toast.error(error.message, {
+					action: {
+						label: "retry",
+						onClick: query.invalidate,
+					},
+				});
+			},
+		}),
+		defaultOptions: { queries: { staleTime: 60 * 1000 } },
+	});
+}
 
 function getBaseUrl() {
 	if (typeof window !== "undefined") return ""; // browser: pakai relative URL
@@ -40,20 +44,20 @@ function getBaseUrl() {
 		: (configuredUrl ?? "http://localhost:3001");
 }
 
-const trpcClient = createTRPCClient<AppRouter>({
-	links: [
-		httpBatchLink({
-			url: `${getBaseUrl()}/api/trpc`,
-		}),
-	],
-});
-
-const trpc = createTRPCOptionsProxy({
-	client: trpcClient,
-	queryClient: queryClient,
-});
-
 export const getRouter = () => {
+	const queryClient = createQueryClient();
+	const trpcClient = createTRPCClient<AppRouter>({
+		links: [
+			httpBatchLink({
+				url: `${getBaseUrl()}/api/trpc`,
+			}),
+		],
+	});
+	const trpc = createTRPCOptionsProxy({
+		client: trpcClient,
+		queryClient,
+	});
+
 	const router = createTanStackRouter({
 		routeTree,
 		scrollRestoration: true,
