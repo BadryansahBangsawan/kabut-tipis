@@ -47,6 +47,8 @@ bun run dev
 
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the fullstack application.
 
+> **Port 3001 already in use?** Stop the other process or change the web app port in the TanStack Start / Vite config under `apps/web`, then re-run `bun run dev`.
+
 ## UI Customization
 
 React web apps in this stack share shadcn/ui primitives through `packages/ui`.
